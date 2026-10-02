@@ -24,18 +24,6 @@ RSpec.describe LavendaPay::Configuration do
     expect(described_class.new.api_token).to eq("env-token")
   end
 
-  it "uses base_url as checkout_url unless set" do
-    stub_const("ENV", {})
-    config = described_class.new
-    config.base_url = "https://pay.example.com"
-
-    expect(config.checkout_url).to eq("https://pay.example.com")
-
-    config.checkout_url = "https://loja.example.com"
-
-    expect(config.checkout_url).to eq("https://loja.example.com")
-  end
-
   it "fails fast when the client is not configured" do
     LavendaPay.reset_configuration!
     stub_const("ENV", {})

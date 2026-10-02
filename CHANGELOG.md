@@ -3,7 +3,7 @@
 ## 0.0.2
 
 - Read settings from the `lavenda_pay` Rails credentials when the environment variable is not set.
-- Add `checkout_url` setting (defaults to `base_url`) and `LavendaPay::Url.order_path`.
+- Add `LavendaPay::Url.order_path` to build the public order page link.
 
 ## 0.1.0
 

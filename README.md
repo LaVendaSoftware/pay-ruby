@@ -20,7 +20,6 @@ lavenda_pay:
   base_url: https://pay.example.com
   api_token: ...
   webhook_secret: ...
-  checkout_url: https://loja.example.com # optional, defaults to base_url
 ```
 
 | Setting          | Environment variable         | Credential                     |
@@ -28,10 +27,9 @@ lavenda_pay:
 | `base_url`       | `LAVENDA_PAY_BASE_URL`       | `lavenda_pay.base_url`         |
 | `api_token`      | `LAVENDA_PAY_API_TOKEN`      | `lavenda_pay.api_token`        |
 | `webhook_secret` | `LAVENDA_PAY_WEBHOOK_SECRET` | `lavenda_pay.webhook_secret`   |
-| `checkout_url`   | `LAVENDA_PAY_CHECKOUT_URL`   | `lavenda_pay.checkout_url`     |
 
-`base_url` is the root of the Lavenda Pay installation, without the `/api` suffix. `checkout_url` is where the public
-order pages live; set it only when they are served from another host (such as the company domain).
+`base_url` is the root of the Lavenda Pay installation, without the `/api` suffix. Use the company domain: the API
+accepts any host, but the public order pages are only served on the company's own domain.
 
 Values set explicitly win over both:
 
@@ -86,8 +84,8 @@ order.status # => "draft"
 
 LavendaPay::Orders::Find.call(order.pid)
 
-# Public payment page for the order, built from `checkout_url`.
-LavendaPay::Url.order_path(order.pid) # => "https://loja.example.com/orders/order_..."
+# Public payment page for the order, built from `base_url`.
+LavendaPay::Url.order_path(order.pid) # => "https://pay.example.com/orders/order_..."
 ```
 
 ## Errors
