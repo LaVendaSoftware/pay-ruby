@@ -5,6 +5,9 @@ module LavendaPay
     attr_writer :base_url, :api_token, :webhook_secret
     attr_accessor :open_timeout, :read_timeout, :logger
 
+    # Callable receiving a LavendaPay::Webhooks::Event; used by the mounted engine.
+    attr_accessor :on_event
+
     def initialize
       @open_timeout = DEFAULT_TIMEOUT
       @read_timeout = DEFAULT_TIMEOUT

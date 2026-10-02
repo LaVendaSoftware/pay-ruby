@@ -86,7 +86,31 @@ end
 
 ## Webhooks
 
-Lavenda Pay POSTs JSON to your endpoint with the shared secret in the header exposed as `LavendaPay::Webhooks::Signature::HEADER`.
+Lavenda Pay POSTs JSON to your endpoint with the shared secret in the header exposed as
+`LavendaPay::Webhooks::Signature::HEADER`.
+
+### Rails engine (recommended)
+
+Mount the engine and give it a handler. It verifies the secret, parses the payload and calls your handler with a
+`LavendaPay::Webhooks::Event` for every supported event.
+
+```ruby
+# config/routes.rb
+mount LavendaPay::Engine => "/webhooks/lavenda_pay"
+
+# config/initializers/lavenda_pay.rb
+LavendaPay.configure do |config|
+  # ...base_url, api_token, webhook_secret
+  config.on_event = ->(event) { MyApp::Webhooks::Process.call(event:) } # any callable
+end
+```
+
+Responses: `200` for handled and unsupported events, `401` for a wrong or missing secret, `422` for an invalid payload.
+Exceptions raised by the handler are not rescued, so the request fails with `500` and the sender retries; make the
+handler idempotent (see `event.idempotency_key`). Without `on_event` configured the endpoint raises a
+`ConfigurationError`.
+
+### Your own controller
 
 ```ruby
 class Webhooks::LavendaPayController < ActionController::API

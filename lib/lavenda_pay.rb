@@ -14,6 +14,7 @@ require_relative "lavenda_pay/customers/find_by"
 require_relative "lavenda_pay/orders/create"
 require_relative "lavenda_pay/orders/find"
 require_relative "lavenda_pay/webhooks"
+require_relative "lavenda_pay/engine" if defined?(Rails::Engine)
 
 module LavendaPay
   class << self
