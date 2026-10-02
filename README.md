@@ -6,24 +6,41 @@ Framework-agnostic (no Rails/ActiveSupport dependency): create customers and ord
 ## Installation
 
 ```ruby
-gem "lavenda-pay-ruby", github: "LaVendaSoftware/pay-ruby"
+gem "lavenda-pay-ruby"
 ```
 
 ## Configuration
 
-```ruby
-# config/initializers/lavenda_pay.rb
-LavendaPay.configure do |config|
-  config.base_url = ENV.fetch("LAVENDA_PAY_BASE_URL", Rails.application.credentials.dig(:lavenda_pay, :base_url))
-  config.api_token = ENV.fetch("LAVENDA_PAY_API_TOKEN", Rails.application.credentials.dig(:lavenda_pay, :api_token))
-  config.webhook_secret = ENV.fetch("LAVENDA_PAY_WEBHOOK_SECRET", Rails.application.credentials.dig(:lavenda_pay, :webhook_secret))
-end
+Settings are read from `LAVENDA_PAY_*` environment variables and, inside a Rails app, from the `lavenda_pay`
+credentials, so a Rails app needs no initializer:
+
+```yaml
+# bin/rails credentials:edit
+lavenda_pay:
+  base_url: https://pay.example.com
+  api_token: ...
+  webhook_secret: ...
+  checkout_url: https://loja.example.com # optional, defaults to base_url
 ```
 
-`base_url` is the root of the Lavenda Pay installation, without the `/api` suffix.
+| Setting          | Environment variable         | Credential                     |
+| ---------------- | ---------------------------- | ------------------------------ |
+| `base_url`       | `LAVENDA_PAY_BASE_URL`       | `lavenda_pay.base_url`         |
+| `api_token`      | `LAVENDA_PAY_API_TOKEN`      | `lavenda_pay.api_token`        |
+| `webhook_secret` | `LAVENDA_PAY_WEBHOOK_SECRET` | `lavenda_pay.webhook_secret`   |
+| `checkout_url`   | `LAVENDA_PAY_CHECKOUT_URL`   | `lavenda_pay.checkout_url`     |
 
-Outside Rails, set the values directly. Anything left unset falls back to the `LAVENDA_PAY_BASE_URL`,
-`LAVENDA_PAY_API_TOKEN` and `LAVENDA_PAY_WEBHOOK_SECRET` environment variables.
+`base_url` is the root of the Lavenda Pay installation, without the `/api` suffix. `checkout_url` is where the public
+order pages live; set it only when they are served from another host (such as the company domain).
+
+Values set explicitly win over both:
+
+```ruby
+LavendaPay.configure do |config|
+  config.base_url = "https://pay.example.com"
+  config.logger = Rails.logger
+end
+```
 
 Every operation is a class with `.call` that uses this global configuration. For several accounts, build a client and
 pass it to the operation:
@@ -68,6 +85,9 @@ order.pid    # => "order_..."
 order.status # => "draft"
 
 LavendaPay::Orders::Find.call(order.pid)
+
+# Public payment page for the order, built from `checkout_url`.
+LavendaPay::Url.order_path(order.pid) # => "https://loja.example.com/orders/order_..."
 ```
 
 ## Errors
