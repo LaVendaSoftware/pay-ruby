@@ -6,7 +6,7 @@ Framework-agnostic (no Rails/ActiveSupport dependency): create customers and ord
 ## Installation
 
 ```ruby
-gem "lavenda_pay", github: "LaVendaSoftware/pay-ruby"
+gem "lavenda-pay-ruby", github: "LaVendaSoftware/pay-ruby"
 ```
 
 ## Configuration

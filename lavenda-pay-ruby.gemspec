@@ -1,7 +1,7 @@
 require_relative "lib/lavenda_pay/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "lavenda_pay"
+  spec.name = "lavenda-pay-ruby"
   spec.version = LavendaPay::VERSION
   spec.authors = ["La Venda Software"]
 
