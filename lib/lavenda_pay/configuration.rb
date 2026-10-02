@@ -2,7 +2,7 @@ module LavendaPay
   class Configuration
     DEFAULT_TIMEOUT = 30
 
-    attr_writer :base_url, :api_token, :webhook_secret
+    attr_writer :base_url, :api_token, :webhook_secret, :checkout_url
     attr_accessor :open_timeout, :read_timeout, :logger
 
     # Callable receiving a LavendaPay::Webhooks::Event; used by the mounted engine.
@@ -14,11 +14,15 @@ module LavendaPay
     end
 
     # Root URL of the Lavenda Pay installation, without the `/api` suffix.
-    def base_url = @base_url || ENV["LAVENDA_PAY_BASE_URL"]
+    def base_url = @base_url || setting(:base_url)
 
-    def api_token = @api_token || ENV["LAVENDA_PAY_API_TOKEN"]
+    def api_token = @api_token || setting(:api_token)
 
-    def webhook_secret = @webhook_secret || ENV["LAVENDA_PAY_WEBHOOK_SECRET"]
+    def webhook_secret = @webhook_secret || setting(:webhook_secret)
+
+    # Root URL of the public checkout pages. Defaults to base_url; set it when
+    # the checkout is served from another host (e.g. the company domain).
+    def checkout_url = @checkout_url || setting(:checkout_url) || base_url
 
     def validate!
       raise ConfigurationError, "LavendaPay base_url is not configured (LAVENDA_PAY_BASE_URL)" if blank?(base_url)
@@ -30,5 +34,18 @@ module LavendaPay
     private
 
     def blank?(value) = value.nil? || value.to_s.strip.empty?
+
+    # `LAVENDA_PAY_<KEY>` environment variable, then the `lavenda_pay` Rails
+    # credentials when running inside a Rails app.
+    def setting(key)
+      value = ENV["LAVENDA_PAY_#{key.to_s.upcase}"]
+      blank?(value) ? rails_credential(key) : value
+    end
+
+    def rails_credential(key)
+      return unless defined?(::Rails.application) && ::Rails.application
+
+      ::Rails.application.credentials.dig(:lavenda_pay, key)
+    end
   end
 end
