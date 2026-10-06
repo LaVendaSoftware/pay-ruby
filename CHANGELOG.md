@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.0.3
 
 - Add `LavendaPay::Payments::Confirm` to confirm a pending payment outside production.
 
