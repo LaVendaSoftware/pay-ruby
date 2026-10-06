@@ -88,6 +88,19 @@ LavendaPay::Orders::Find.call(order.pid)
 LavendaPay::Url.order_path(order.pid) # => "https://pay.example.com/orders/order_..."
 ```
 
+## Payments
+
+Sandbox only: confirm a pending payment as if the customer had paid it, to test your payment flow
+end to end. LavendaPay marks it as paid and, when the gateway supports it, confirms it there too.
+The endpoint does not exist in production, where it raises `LavendaPay::NotFoundError`.
+
+```ruby
+# The payment pid comes from the payment outcome webhooks.
+payment = LavendaPay::Payments::Confirm.call("pay_...")
+payment.status               # => "paid"
+payment.gateway_confirmation # => "confirmed", "failed" or "unsupported"
+```
+
 ## Errors
 
 Non-2xx responses raise a `LavendaPay::ApiError` subclass exposing `status`, `body` and `errors`:

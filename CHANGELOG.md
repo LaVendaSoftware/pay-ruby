@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add `LavendaPay::Payments::Confirm` to confirm a pending payment outside production.
+
 ## 0.0.2
 
 - Read settings from the `lavenda_pay` Rails credentials when the environment variable is not set.
