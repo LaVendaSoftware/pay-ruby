@@ -15,6 +15,7 @@ require_relative "lavenda_pay/customers/find_by"
 require_relative "lavenda_pay/orders/create"
 require_relative "lavenda_pay/orders/find"
 require_relative "lavenda_pay/payments/confirm"
+require_relative "lavenda_pay/payments/confirm_manual_pix"
 require_relative "lavenda_pay/url"
 require_relative "lavenda_pay/webhooks"
 require_relative "lavenda_pay/engine" if defined?(Rails::Engine)

@@ -178,3 +178,29 @@ Supported events: `order_created`, `order_pending`, `order_partially_paid`, `ord
 bundle install
 bundle exec rspec
 ```
+
+
+### Manual Pix
+
+An admin must enable the company, and the merchant configures its fixed Pix key
+in LavendaPay before creating orders with `payment_method_kinds: ["manual_pix"]`.
+The minimum charge remains R$5 after discounts. The customer reviews delivery and
+payment on the payment page before generating a static QR code locally.
+
+After the merchant verifies the funds in its account:
+
+```ruby
+payment = LavendaPay::Payments::ConfirmManualPix.call("payment_pid")
+receipt = payment.manual_pix_receipt
+receipt["received_amount_cents"] # actual net cents received
+receipt["credited_amount_cents"] # gross amount credited to the order
+receipt["unapplied_amount_cents"] # net funds requiring manual handling
+receipt["needs_review"]
+```
+
+Any token belonging to the company can call this operation. It is available in
+production and is separate from sandbox-only `Payments::Confirm`. Repeating a
+call returns the same receipt. It can reconcile an issued but canceled Pix;
+paid/canceled orders are never reopened, and unallocated receipts require manual
+review/refund. Canceling a static Pix in LavendaPay cannot revoke a copied QR code
+at the bank. No bank transfer or refund is performed by this operation.

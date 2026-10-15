@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add `Payments::ConfirmManualPix` for merchant-verified receipts and canceled-Pix reconciliation.
+- Document `manual_pix` orders and receipt allocation/review fields.
+
 ## 0.0.3
 
 - Add `LavendaPay::Payments::Confirm` to confirm a pending payment outside production.
