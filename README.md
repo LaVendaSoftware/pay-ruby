@@ -90,6 +90,25 @@ LavendaPay::Url.order_path(order.pid) # => "https://pay.example.com/orders/order
 
 ## Payments
 
+Every provider fee is passed on to the customer. Simulate the amount the merchant wants to receive
+to show the options, then create the order with the card installments the customer chose. The server
+computes the amount again at the current rates, and accepts only the count, never an amount. The
+customer pays on the order's page, which shows the final amount; card data never goes through the API.
+
+```ruby
+simulation = LavendaPay::Payments::Simulate.call(amount: 100.0)
+simulation.options.map { |o| [o.payment_method_kind, o.installment_count, o.installment_value, o.total] }
+# => [["pix", 1, 100.99, 100.99], ["credit_card", 1, 102.54, 102.54], ["credit_card", 2, 51.27, 102.54], ...]
+
+order = LavendaPay::Orders::Create.call(
+  customer_pid: customer.pid,
+  payment_method_kinds: ["pix", "credit_card"],
+  items_attributes: [{product_title: "Material didático", quantity: 1, unit_price: 100.0}],
+  card_installment_count: 3
+)
+order.card_installment_option.total # => 102.54, at the rates of this moment
+```
+
 Sandbox only: confirm a pending payment as if the customer had paid it, to test your payment flow
 end to end. LavendaPay marks it as paid and, when the gateway supports it, confirms it there too.
 The endpoint does not exist in production, where it raises `LavendaPay::NotFoundError`.
