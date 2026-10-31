@@ -4,8 +4,7 @@
 
 - Add `LavendaPay::PaymentLinks` (`Create`, `Find`, `List`, `End`) and `LavendaPay::PaymentLink`.
 - `LavendaPay::Order` exposes `payment_link_pid`.
-- Add `LavendaPay::Payments::Simulate` to get the options for an amount, with every fee passed on to the customer.
-- `LavendaPay::Orders::Create` accepts `card_installment_count` and the order exposes `card_installment_option`.
+- Add `LavendaPay::Payments::Simulate` to preview the options for an amount, with the card fee passed on to the customer.
 - `LavendaPay::Payment` exposes `installment_count`, `surcharge` and `charged_total`.
 
 ## 0.0.3

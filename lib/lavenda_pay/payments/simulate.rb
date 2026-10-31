@@ -1,9 +1,10 @@
 module LavendaPay
   module Payments
-    # Simulates the amount the merchant wants to receive, with every fee passed
-    # on to the customer. It is a preview at the current rates: send the chosen
-    # card count as `card_installment_count` to LavendaPay::Orders::Create, and
-    # the server computes the amount again.
+    # Previews the options for the amount the merchant wants to receive: one per
+    # credit card installment count, with the card fee passed on to the customer,
+    # and one for Pix at the plain amount. It binds no price: the customer chooses
+    # the installments on the order's payment page, where the amount is computed
+    # again.
     #
     # LavendaPay::Payments::Simulate.call(amount: 100.0) # => LavendaPay::PaymentSimulation
     class Simulate < Operation

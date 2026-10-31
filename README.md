@@ -90,23 +90,18 @@ LavendaPay::Url.order_path(order.pid) # => "https://pay.example.com/orders/order
 
 ## Payments
 
-Every provider fee is passed on to the customer. Simulate the amount the merchant wants to receive
-to show the options, then create the order with the card installments the customer chose. The server
-computes the amount again at the current rates, and accepts only the count, never an amount. The
-customer pays on the order's page, which shows the final amount; card data never goes through the API.
+Preview the options for the amount the merchant wants to receive, before redirecting the customer to
+the order's payment page. The card fee is passed on to the customer; Pix passes nothing on, so its
+`fee` and `net_amount` are `nil`, meaning unknown rather than zero. A simulation binds no price: the
+customer chooses the installments on the payment page, where the server computes the amount again.
+Card data never goes through the API.
 
 ```ruby
 simulation = LavendaPay::Payments::Simulate.call(amount: 100.0)
 simulation.options.map { |o| [o.payment_method_kind, o.installment_count, o.installment_value, o.total] }
-# => [["pix", 1, 100.99, 100.99], ["credit_card", 1, 102.54, 102.54], ["credit_card", 2, 51.27, 102.54], ...]
+# => [["pix", 1, 100.0, 100.0], ["credit_card", 1, 102.54, 102.54], ["credit_card", 2, 51.27, 102.54], ...]
 
-order = LavendaPay::Orders::Create.call(
-  customer_pid: customer.pid,
-  payment_method_kinds: ["pix", "credit_card"],
-  items_attributes: [{product_title: "Material didático", quantity: 1, unit_price: 100.0}],
-  card_installment_count: 3
-)
-order.card_installment_option.total # => 102.54, at the rates of this moment
+LavendaPay::Url.order_path(order.pid) # send the customer here to choose and pay
 ```
 
 Sandbox only: confirm a pending payment as if the customer had paid it, to test your payment flow

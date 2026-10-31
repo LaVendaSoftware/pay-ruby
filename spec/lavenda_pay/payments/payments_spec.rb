@@ -6,7 +6,7 @@ RSpec.describe "LavendaPay::Payments" do
       stub = stub_request(:post, url)
         .with(body: {payment_simulation: {amount: 100.0}}.to_json)
         .to_return(status: 200, body: {payment_simulation: {amount: 100.0, options: [
-          {payment_method_kind: "pix", installment_count: 1, installment_value: 100.99, total: 100.99, fee: 0.99, net_amount: 100.0},
+          {payment_method_kind: "pix", installment_count: 1, installment_value: 100.0, total: 100.0, fee: nil, net_amount: nil},
           {payment_method_kind: "credit_card", installment_count: 3, installment_value: 34.18, total: 102.54, fee: 2.54, net_amount: 100.0}
         ]}}.to_json)
 
@@ -18,6 +18,7 @@ RSpec.describe "LavendaPay::Payments" do
       expect(simulation.options.map(&:payment_method_kind)).to eq(["pix", "credit_card"])
       expect(simulation.options.last).to be_a(LavendaPay::PaymentOption)
       expect(simulation.options.last.total).to eq(102.54)
+      expect(simulation.options.first.fee).to be_nil
     end
 
     it "maps an invalid amount to UnprocessableError" do
