@@ -77,7 +77,8 @@ order = LavendaPay::Orders::Create.call(
   eid: "ORD-0123",
   frequency: "once",
   currency: "brl",
-  items_attributes: [{product_title: "Material didático", quantity: 1, unit_price: 450.0}]
+  items_attributes: [{product_title: "Material didático", quantity: 1, unit_price: 450.0}],
+  max_installment_count: 3 # optional: up to how many card installments, 1 to 12, defaults to 12
 )
 order.pid    # => "order_..."
 order.status # => "draft"
@@ -89,6 +90,20 @@ LavendaPay::Url.order_path(order.pid) # => "https://pay.example.com/orders/order
 ```
 
 ## Payments
+
+Preview the options for the amount the merchant wants to receive, before redirecting the customer to
+the order's payment page. The card fee is passed on to the customer; Pix passes nothing on, so its
+`fee` and `net_amount` are `nil`, meaning unknown rather than zero. A simulation has no order, so it ignores
+an order's `max_installment_count`, and it binds no price: the customer chooses the installments on the payment page, where the server computes the amount again.
+Card data never goes through the API.
+
+```ruby
+simulation = LavendaPay::Payments::Simulate.call(amount: 100.0)
+simulation.options.map { |o| [o.payment_method_kind, o.installment_count, o.installment_value, o.total] }
+# => [["pix", 1, 100.0, 100.0], ["credit_card", 1, 102.54, 102.54], ["credit_card", 2, 51.27, 102.54], ...]
+
+LavendaPay::Url.order_path(order.pid) # send the customer here to choose and pay
+```
 
 Sandbox only: confirm a pending payment as if the customer had paid it, to test your payment flow
 end to end. LavendaPay marks it as paid and, when the gateway supports it, confirms it there too.
