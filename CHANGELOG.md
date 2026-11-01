@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.0.4
 
 - Add `LavendaPay::PaymentLinks` (`Create`, `Find`, `List`, `End`) and `LavendaPay::PaymentLink`.
 - `LavendaPay::Order` exposes `payment_link_pid`.
