@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add `LavendaPay::PaymentLinks` (`Create`, `Find`, `List`, `End`) and `LavendaPay::PaymentLink`.
+- `LavendaPay::Order` exposes `payment_link_pid`.
+
 ## 0.0.3
 
 - Add `LavendaPay::Payments::Confirm` to confirm a pending payment outside production.
