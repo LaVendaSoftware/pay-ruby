@@ -77,7 +77,8 @@ order = LavendaPay::Orders::Create.call(
   eid: "ORD-0123",
   frequency: "once",
   currency: "brl",
-  items_attributes: [{product_title: "Material didático", quantity: 1, unit_price: 450.0}]
+  items_attributes: [{product_title: "Material didático", quantity: 1, unit_price: 450.0}],
+  max_installment_count: 3 # optional: up to how many card installments, 1 to 12, defaults to 12
 )
 order.pid    # => "order_..."
 order.status # => "draft"
@@ -92,8 +93,8 @@ LavendaPay::Url.order_path(order.pid) # => "https://pay.example.com/orders/order
 
 Preview the options for the amount the merchant wants to receive, before redirecting the customer to
 the order's payment page. The card fee is passed on to the customer; Pix passes nothing on, so its
-`fee` and `net_amount` are `nil`, meaning unknown rather than zero. A simulation binds no price: the
-customer chooses the installments on the payment page, where the server computes the amount again.
+`fee` and `net_amount` are `nil`, meaning unknown rather than zero. A simulation has no order, so it ignores
+an order's `max_installment_count`, and it binds no price: the customer chooses the installments on the payment page, where the server computes the amount again.
 Card data never goes through the API.
 
 ```ruby

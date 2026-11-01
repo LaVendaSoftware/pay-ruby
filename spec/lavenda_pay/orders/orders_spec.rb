@@ -21,6 +21,20 @@ RSpec.describe "LavendaPay::Orders" do
     end
   end
 
+  describe LavendaPay::Orders::Create, "with a maximum installment count" do
+    it "sends it and exposes it on the order" do
+      params = {customer_pid: "cus_1", payment_method_kinds: ["credit_card"], max_installment_count: 3}
+      stub = stub_request(:post, "https://pay.example.com/api/v1/orders")
+        .with(body: {order: params}.to_json)
+        .to_return(status: 200, body: {order: {pid: "order_1", max_installment_count: 3}}.to_json)
+
+      order = described_class.call(params)
+
+      expect(stub).to have_been_requested
+      expect(order.max_installment_count).to eq(3)
+    end
+  end
+
   describe LavendaPay::Orders::Find do
     it "finds an order by pid" do
       stub_request(:get, "https://pay.example.com/api/v1/orders/order_1")
