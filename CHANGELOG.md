@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `LavendaPay::Orders::Create` accepts `requires_sign_in`, and `LavendaPay::Order` exposes it.
+
+## 0.0.4
+
 - Add `LavendaPay::PaymentLinks` (`Create`, `Find`, `List`, `End`) and `LavendaPay::PaymentLink`.
 - `LavendaPay::Order` exposes `payment_link_pid`.
 - Add `LavendaPay::Payments::Simulate` to preview the options for an amount, with the card fee passed on to the customer.

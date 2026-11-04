@@ -3,7 +3,8 @@ RSpec.describe "LavendaPay::Orders" do
     let(:params) do
       {
         customer_pid: "cus_1", payment_method_kinds: ["pix"], frequency: "once", currency: "brl",
-        items_attributes: [{product_title: "Livro", quantity: 1, unit_price: 450.0}]
+        items_attributes: [{product_title: "Livro", quantity: 1, unit_price: 450.0}],
+        requires_sign_in: true
       }
     end
 
@@ -11,12 +12,12 @@ RSpec.describe "LavendaPay::Orders" do
       stub = stub_request(:post, "https://pay.example.com/api/v1/orders")
         .with(body: {order: params}.to_json)
         .to_return(status: 201, body: {order: {pid: "order_1", status: "draft", requires_billing_address: true,
-                                               customer: {pid: "cus_1"}}}.to_json)
+                                               requires_sign_in: true, customer: {pid: "cus_1"}}}.to_json)
 
       order = described_class.call(params)
 
       expect(stub).to have_been_requested
-      expect([order.pid, order.status, order.requires_billing_address]).to eq(["order_1", "draft", true])
+      expect([order.pid, order.status, order.requires_billing_address, order.requires_sign_in]).to eq(["order_1", "draft", true, true])
       expect(order.customer).to be_a(LavendaPay::Customer)
     end
   end
