@@ -78,7 +78,8 @@ order = LavendaPay::Orders::Create.call(
   frequency: "once",
   currency: "brl",
   items_attributes: [{product_title: "Material didático", quantity: 1, unit_price: 450.0}],
-  max_installment_count: 3 # optional: up to how many card installments, 1 to 12, defaults to 12
+  max_installment_count: 3, # optional: up to how many card installments, 1 to 12, defaults to 12
+  requires_sign_in: true # optional: payment page only for the signed-in customer and the company team, defaults to false
 )
 order.pid    # => "order_..."
 order.status # => "draft"

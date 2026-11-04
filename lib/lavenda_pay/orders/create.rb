@@ -4,7 +4,8 @@ module LavendaPay
     #   customer_pid: "...", payment_method_kinds: ["pix", "credit_card"],
     #   description: "...", eid: "ORD-1", frequency: "once", currency: "brl",
     #   items_attributes: [{product_title: "...", quantity: 1, unit_price: 450.0}],
-    #   max_installment_count: 3 # optional, 1 to 12, defaults to 12
+    #   max_installment_count: 3, # optional, 1 to 12, defaults to 12
+    #   requires_sign_in: true # optional, defaults to false
     # ) # => LavendaPay::Order
     class Create < Operation
       def call(params)
